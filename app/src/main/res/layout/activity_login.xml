@@ -112,4 +112,18 @@
         android:layout_marginEnd="15dp"
         android:gravity="end"/>
 
+    <TextView
+        android:id="@+id/imNotAdminTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I'm not an admin"
+        android:textColor="@color/pink"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="48dp"
+        android:layout_marginStart="15dp"
+        android:gravity="start"/>
+
 </RelativeLayout>

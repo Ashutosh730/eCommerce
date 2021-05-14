@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommerce.Model.Users;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private ProgressDialog loadingBar;
     private String parentDbName = "Users";
     private com.rey.material.widget.CheckBox rememberMeCheckBox;
+    private TextView imAdmin, imNotAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,8 @@ public class LoginActivity extends AppCompatActivity {
         inputPhone = findViewById(R.id.login_phone_number_input);
         loginBtn = findViewById(R.id.login_btn);
         rememberMeCheckBox = findViewById(R.id.remember_me_chk);
+        imAdmin = findViewById(R.id.imAdminTxt);
+        imNotAdmin = findViewById(R.id.imNotAdminTxt);
         loadingBar = new ProgressDialog(this);
 
         loginBtn.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +63,30 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
+
+        imAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginBtn.setText("Login Admin");
+                imNotAdmin.setVisibility(View.VISIBLE);
+                imAdmin.setVisibility(View.INVISIBLE);
+                parentDbName="Admins";
+            }
+        });
+
+        imNotAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imAdmin.setVisibility(View.VISIBLE);
+                imNotAdmin.setVisibility(View.INVISIBLE);
+                loginBtn.setText("Login");
+                parentDbName="Users";
+            }
+        });
+    }
+
+    private void loginAdmin() {
+        startActivity(new Intent(LoginActivity.this, AdminActivity.class));
     }
 
     public void loginUser() {
@@ -91,7 +119,6 @@ public class LoginActivity extends AppCompatActivity {
 
                     Users usersData = snapshot.child(parentDbName).child(number).getValue(Users.class);
 
-
                     if (usersData.getPhone().equals(number) && usersData.getPassword().equals(password)) {
 
                         if(rememberMeCheckBox.isChecked()){
@@ -99,9 +126,16 @@ public class LoginActivity extends AppCompatActivity {
                             Paper.book().write(Prevalent.userPasswordKey,password);
                         }
 
-                        Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
-                        loadingBar.dismiss();
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        if(parentDbName.equals("Users")) {
+                            Toast.makeText(LoginActivity.this, "Logged in successfully", Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        }
+                        else if(parentDbName.equals("Admins")){
+                            Toast.makeText(LoginActivity.this, "Admin logged in successfully", Toast.LENGTH_SHORT).show();
+                            loadingBar.dismiss();
+                            startActivity(new Intent(LoginActivity.this, AdminActivity.class));
+                        }
                     } else
                         Toast.makeText(LoginActivity.this, "Invalid phone number or password", Toast.LENGTH_SHORT).show();
 
